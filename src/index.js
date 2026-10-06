@@ -5,6 +5,8 @@ import Swal from "sweetalert2";
 import Acciones from "./Acciones.js";
 import {atk_basico} from "./interfaz.js";
 import {atk_especial} from "./interfaz.js";
+import {carga_energia} from "./interfaz.js";
+import { usar_semilla } from "./interfaz.js";
 const btn_player1 = document.getElementById("btn_player1");
 const btn_player2 = document.getElementById("btn_player2");
 //
@@ -18,7 +20,6 @@ const atkE2 = document.getElementById("atkE2");
 const atkC2 = document.getElementById("atkC2");
 const atkS2 = document.getElementById("atkS2");
 
-btn_py1
 const player1 = document.getElementById("py1");
 const player2 = document.getElementById("py2");
 const nombre1 = document.getElementById("player1");
@@ -62,6 +63,8 @@ const barras = ()=>{
     ki1.innerText=`${jugador1.getEnergia()}%`;
     vida1.style.width=`${jugador1.getVida()}%`;
     vida1.innerText=`${jugador1.getVida()}%`;
+    const badgeS1 = atkS1.querySelector(".badge");
+    atkS1.disabled = jugador1.getSemilla() <= 0 ? true : false;
     //Jugador2
     energia2.style.width=`${jugador2.getEnergia()}%`;
     energia2.innerText=`${jugador2.getEnergia()}%`;
@@ -69,7 +72,8 @@ const barras = ()=>{
     ki2.innerText=`${jugador2.getEnergia()}%`;
     vida2.style.width=`${jugador2.getVida()}%`;
     vida2.innerText=`${jugador2.getVida()}%`;
-
+    const badgeS2 = atkS2.querySelector(".badge");
+    atkS2.disabled = jugador2.getSemilla() <= 0 ? true : false;
 }
 nombre1.addEventListener("input",(event) =>{
     event.target.value = event.target.value.replace(/[^a-zA-Z0-9]+/,"");
@@ -151,6 +155,14 @@ btn_player2.addEventListener("click",() =>{
             atk_especial(jugador1,jugador2);
         }
 
+        if(boton.id == "atkC1"){
+            carga_energia(jugador1);
+        }
+
+        if(boton.id == "atkS1"){
+            usar_semilla(jugador1);
+        }
+
         barras();
     });
 });
@@ -164,6 +176,14 @@ btn_player2.addEventListener("click",() =>{
 
         if(boton.id == "atkE2"){
             atk_especial(jugador2,jugador1);
+        }
+
+        if(boton.id == "atkC2"){
+            carga_energia(jugador2);
+        }
+
+        if(boton.id == "atkS2"){
+            usar_semilla(jugador2);
         }
 
         barras();

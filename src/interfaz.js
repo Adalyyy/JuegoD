@@ -91,3 +91,43 @@ const atk_especial = (j1, j2) => {
 };
 
 export {atk_especial};
+
+const carga_energia = (j1) => {
+    j1.cargaEnergia();
+
+    Swal.fire({
+        text: "¡Recuperando energía!",
+        title: "Cargar Ki",
+        imageUrl: `./public/img/${j1.getPersonaje()}/base.png`,
+        imageWidth: 300,
+        imageHeight: 300,
+        position: "center-center",
+        width: 600,
+        color: "#fff",
+        background: "none",
+        showConfirmButton: false,
+        timer: 1500
+    });
+};
+
+const usar_semilla = (j1) => {
+    if (j1.getSemilla() > 0) {
+        j1.curacion();
+        Swal.fire({
+            text: "Salud, Ki y Energía restaurados!",
+            title: "Semilla del Ermitaño",
+            imageUrl: `./public/img/${j1.getPersonaje()}/curar.png`,
+            imageWidth: 300,
+            imageHeight: 300,
+            position: "center-center",
+            width: 600,
+            color: "#fff",
+            background: "none",
+            showConfirmButton: false,
+            timer: 1500
+        });
+    }
+};
+
+export {carga_energia};
+export { usar_semilla };

@@ -59,6 +59,10 @@ class Personaje{
         this.#energia=energia;
     }
 
+    setSemilla(semilla){
+        this.#semilla = semilla;
+    }
+
     
 }
 export default Personaje;
