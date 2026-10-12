@@ -2,10 +2,25 @@ import Personaje from "./Personaje.js";
 // Accionnes es una clase heredadas de Personaje
 //un objeto de Accionnes tendrá acceso a los métodos públicos que herede de personajes  
 class  Acciones extends Personaje{
+
+    #contadorATKESP=2;
     constructor(nombre, personaje){
         //super() llama al constructor de la clase padre, es deci
         super(nombre, personaje);
     }
+
+    getContadorEspecial(){
+        return this.#contadorATKESP
+    }
+
+    setContadorEspecial(valor){
+        this.#contadorATKESP = valor;
+    }
+
+    aumentarContadorEspecial(){
+        this.#contadorATKESP++;
+    }
+    
     
     atkBasico(){
         this.setEnergia(this.getEnergia() - 5 < 0 ? 0 : this.getEnergia() - 5);

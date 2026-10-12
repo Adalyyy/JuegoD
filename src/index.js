@@ -1,12 +1,14 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import './css/main.css';
 import Swal from "sweetalert2";
 import Acciones from "./Acciones.js";
 import {atk_basico} from "./interfaz.js";
 import {atk_especial} from "./interfaz.js";
 import {carga_energia} from "./interfaz.js";
 import { usar_semilla } from "./interfaz.js";
+import { alertaJuego } from "./interfaz.js";
 const btn_player1 = document.getElementById("btn_player1");
 const btn_player2 = document.getElementById("btn_player2");
 //
@@ -45,36 +47,78 @@ const vida2 =document.getElementById("vida2");
 
 let pj1 = "", pj2 = "";
 let jugador1, jugador2;
+//let turno = 1;
 
+//Iniciar
 const iniciar_juego = () =>{
     username1.innerText = nombre1.value;
     personaje1.innerText = pj1;
     img1.src = `./public/img/${pj1}/base.png`;
     username2.innerText = nombre2.value;
     personaje2.innerText = pj2;
-    img2.src = `./public/img/${pj2}/base.png`;
+    img2.src = `./public/img/${pj2}/base.png`;  
+
+    document.getElementById("barra1").classList.remove("d-none");
+    document.getElementById("barra2").classList.remove("d-none");
+
+    jugador1.setEsSuTurno(true);
+    jugador2.setEsSuTurno(false);
+
+    alertaJuego();
+    desactivar_btns();  
+
 }
+
+
+//DesactivarTurnos
+const desactivar_btns = () => {
+    const botonesP1 = document.getElementById("btn_py1").querySelectorAll("button");
+    botonesP1.forEach(boton => {
+        boton.disabled = !jugador1.getEsSuTurno(); 
+    });
+
+    const botonesP2 = document.getElementById("btn_py2").querySelectorAll("button");
+    botonesP2.forEach(boton => {
+        boton.disabled = !jugador2.getEsSuTurno();
+    });
+}
+
+
 //Barra de personajes
 const barras = ()=>{
     //Jugador1
     energia1.style.width=`${jugador1.getEnergia()}%`;
     energia1.innerText=`${jugador1.getEnergia()}%`;
-    ki1.style.width=`${jugador1.getEnergia()}%`;
-    ki1.innerText=`${jugador1.getEnergia()}%`;
+
+    ki1.style.width = `${jugador1.getKi()}%`;
+    ki1.innerText = `${jugador1.getKi()}%`;
+
     vida1.style.width=`${jugador1.getVida()}%`;
     vida1.innerText=`${jugador1.getVida()}%`;
-    const badgeS1 = atkS1.querySelector(".badge");
+
     atkS1.disabled = jugador1.getSemilla() <= 0 ? true : false;
+    atkS1.querySelector("span").innerText = jugador1.getSemilla();
+
+    
+    
+    
     //Jugador2
     energia2.style.width=`${jugador2.getEnergia()}%`;
     energia2.innerText=`${jugador2.getEnergia()}%`;
-    ki2.style.width=`${jugador2.getEnergia()}%`;
-    ki2.innerText=`${jugador2.getEnergia()}%`;
+
+    ki2.style.width = `${jugador2.getKi()}%`;
+    ki2.innerText = `${jugador2.getKi()}%`;
+
     vida2.style.width=`${jugador2.getVida()}%`;
     vida2.innerText=`${jugador2.getVida()}%`;
-    const badgeS2 = atkS2.querySelector(".badge");
+
+
     atkS2.disabled = jugador2.getSemilla() <= 0 ? true : false;
+    atkS2.querySelector("span").innerText = jugador2.getSemilla();
+
 }
+
+//nombre
 nombre1.addEventListener("input",(event) =>{
     event.target.value = event.target.value.replace(/[^a-zA-Z0-9]+/,"");
 });
@@ -97,6 +141,7 @@ const msj_error = (msj) =>{
     });
 }
 
+//jugadores
 [...player1.querySelectorAll("img")].map((imagen) => {
     imagen.addEventListener('click',(event)=>{
         remover_seleccion("danger",...player1.querySelectorAll("img"));
@@ -114,6 +159,7 @@ const msj_error = (msj) =>{
     });
 });
 
+//Entrar
 btn_player1.addEventListener("click",() =>{
     if(nombre1.value == ""){
         return msj_error("El jugador 1 no ha ingresado un nombre de usuario!");
@@ -141,9 +187,13 @@ btn_player2.addEventListener("click",() =>{
     jugador2 = new Acciones(nombre2.value,pj2);
     nombre2.disabled=true;
     player2.classList.add("d-none");
-    iniciar_juego();
+    if(jugador1 && jugador2){
+        nombres.classList.add("d-none");
+        iniciar_juego();
+    }
 });
 
+//Jugadores1
 [...document.getElementById("btn_py1").querySelectorAll("button")].map((boton) => {
     boton.addEventListener("click",()=>{
 
@@ -156,17 +206,21 @@ btn_player2.addEventListener("click",() =>{
         }
 
         if(boton.id == "atkC1"){
-            carga_energia(jugador1);
+            carga_energia(jugador1,jugador2);
         }
 
         if(boton.id == "atkS1"){
-            usar_semilla(jugador1);
+            usar_semilla(jugador1,jugador2);
         }
 
         barras();
+        desactivar_btns();
+        ganadorV();
+        //cambiarTurno(); 
     });
 });
 
+//JUgadores2
 [...document.getElementById("btn_py2").querySelectorAll("button")].map((boton) => {
     boton.addEventListener("click",()=>{
 
@@ -179,13 +233,42 @@ btn_player2.addEventListener("click",() =>{
         }
 
         if(boton.id == "atkC2"){
-            carga_energia(jugador2);
+            carga_energia(jugador2,jugador1);
         }
 
         if(boton.id == "atkS2"){
-            usar_semilla(jugador2);
+            usar_semilla(jugador2,jugador1);
         }
 
         barras();
+        desactivar_btns();
+        ganadorV();
+        
+        //cambiarTurno(); 
     });
 });
+
+const ganadorMost = (ganador) => {
+    Swal.fire({
+        title: "Juego finalizado",
+        text: `${ganador.getNombre()} ha ganado el combate`,
+        imageUrl: `./public/img/ganador.jpeg`,
+        imageWidth: 400,
+        imageHeight: 200,
+        imageAlt: "Ganador",
+        confirmButtonColor: '#7b8c1c',
+        confirmButtonText: 'OK'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            location.reload();
+        }
+    });
+};
+
+const ganadorV = () => {
+    if (jugador1.getVida() <= 0) {
+        ganadorMost(jugador2);
+    } else if (jugador2.getVida() <= 0) {
+        ganadorMost(jugador1);
+    }
+};

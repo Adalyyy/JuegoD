@@ -6,6 +6,8 @@ class Personaje{
     #semilla=2;
     #personaje;
     #nombre;
+    #turno = false;
+
     constructor(nombre,personaje){
         this.#nombre=nombre;  
         this.#personaje= personaje;
@@ -61,6 +63,14 @@ class Personaje{
 
     setSemilla(semilla){
         this.#semilla = semilla;
+    }
+
+    getEsSuTurno() {
+        return this.#turno;
+    }
+
+    setEsSuTurno(turno) {
+        this.#turno = turno;
     }
 
     
